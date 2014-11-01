@@ -1,45 +1,74 @@
-num = 
-"73167176531330624919225119674426574742355349194934
-96983520312774506326239578318016984801869478851843
-85861560789112949495459501737958331952853208805511
-12540698747158523863050715693290963295227443043557
-66896648950445244523161731856403098711121722383113
-62229893423380308135336276614282806444486645238749
-30358907296290491560440772390713810515859307960866
-70172427121883998797908792274921901699720888093776
-65727333001053367881220235421809751254540594752243
-52584907711670556013604839586446706324415722155397
-53697817977846174064955149290862569321978468622482
-83972241375657056057490261407972968652414535100474
-82166370484403199890008895243450658541227588666881
-16427171479924442928230863465674813919123162824586
-17866458359124566529476545682848912883142607690042
-24219022671055626321111109370544217506941658960408
-07198403850962455444362981230987879927244284909188
-84580156166097919133875499200524063689912560717606
-05886116467109405077541002256983155200055935729725
-71636269561882670428252483600823257530420752963450"
+require_relative 'helper/data'
+include TheData
 
-# numbers = num.each_char.inject([]) {|arr,char| arr << char.to_i}
+class Hurray
+
+	attr_accessor :rows, :cols
+
+	def initialize(num=nil)
+		@num = num
+		split_rows
+	end
+
+	def show
+		@final
+	end
+
+	def dimensions
+		"[x][y] : [#{@final.count}][#{@count}]"
+	end
+
+	def spread
+		Array.new(@rows) {Array.new(@cols)}
+	end
+
+	def read
+		@num
+	end
+
+	def largest_product(num)
+		obj = read.split(/\n\,/)[0].gsub(/\n/,'')
+		result = 0
+		for x in 0..obj.length-1 
+			check = 1
+			(0..num).each do |c|
+				check *= obj[x+c].to_i
+			end
+			result = check if check > result
+		end
+		result
+	end
 
 
+	private
 
+	def split_rows
+		@final = []
+		line = ""
+		@count = 0
+		@num.each_char do |char| 
+			if char.match(/\n/)
+				@final << line
+				line = ''
+				@count = 0
+			else
+				line += char	
+				@count += 1
+			end
+		end
 
+		beg  = @num.length-@count
+		wall = @num.length-1
 
+		@final << @num[beg..wall]
+		@rows = @final.count
+		@cols = @count
+		self
+	end
 
-# grid = Array.new(20) {Array.new(50)}
-# count = 0
+end
 
-# while count <= 50
-# 	for y in 0..19
-# 		for x in 0..49
-# 			grid[y][x] = numbers[count]
-# 			count += 1
-# 		end
-# 	end
-# end
-
-# p grid
+p Hurray.new(DATA[:num]).largest_product(12)
 
 
 
